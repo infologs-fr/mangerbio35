@@ -889,7 +889,7 @@
           "Origine production",
           "Origine transformation",
           "Note coordinateur",
-          "Prix d'achat",
+          "Tarif fournisseur",
           "Règle tarifaire",
           "Tarif Application au 01/10/2024",
           "Compte de vente",
@@ -906,7 +906,9 @@
           "Zone de stockage",
         ];
 
-        const outputRows = [outputHeaders.join(SEPARATOR)];
+        const outputRows = [
+          outputHeaders.map((header) => `"${header}"`).join(SEPARATOR),
+        ];
 
         rows.forEach((row) => {
           const designation = row["Designation"].toLowerCase();
@@ -920,78 +922,80 @@
               : row["Unité de vente"] === "KG"
               ? "K"
               : "U";
+          const prix = (
+            parseFloat(row["Prix unitaire net"].replace(",", ".")) * 1.3
+          )
+            .toFixed(2)
+            .replace(",", "")
+            .replace(".", ",");
           const forfaitQualite = typeProduit === "fruit" ? "1S" : "2S";
           const uniteGestion = unitePrix === "U" ? "U" : "COLIS";
           const quantite = unitePrix === "U" ? "0" : parseInt(row["Colisage"]);
           const colisageOutput =
             unitePrix === "U" ? parseInt(row["Colisage"]) : "1";
-
           const outputRow = [
-            "*" + row["Référence"],
-            "NFFU9F44",
-            "BIODIS",
-            "",
-            typeProduit,
-            libelleTypeProduit,
-            "S12",
-            famille,
-            "",
-            "B",
-            "Biologique",
-            forfaitQualite,
-            row["Designation"],
-            "",
-            "",
-            "",
-            "",
-            "",
-            (parseFloat(row["Prix unitaire net"].replace(",", ".")) * 1.3)
-              .toFixed(2)
-              .replace(",", "")
-              .replace(".", ","),
-            unitePrix,
-            "",
-            "",
-            "",
-            "1",
-            "1",
-            "",
-            "",
-            uniteGestion,
-            "",
-            "",
-            quantite,
-            "0",
-            "",
-            colisageOutput,
-            "1",
-            "2",
-            "",
-            "",
-            "0",
-            "",
-            "0",
-            "[EU]",
-            "",
-            "",
-            row["Pays d'origine"],
-            "",
-            "",
-            row["Prix unitaire net"],
-            "FLG05",
-            "",
-            "7070171000",
-            "6070171000",
-            "C001",
-            "1",
-            "0",
-            "0",
-            "0",
-            "",
-            "",
-            "",
-            "",
-            "",
+            `"*${row["Référence"]}"`,
+            `"NFFU9F44"`,
+            `"BIODIS"`,
+            `""`,
+            `"${typeProduit}"`,
+            `"${libelleTypeProduit}"`,
+            `"S12"`,
+            `"${famille}"`,
+            `""`,
+            `"B"`,
+            `"Biologique"`,
+            `"${forfaitQualite}"`,
+            `"${row["Designation"]}"`,
+            `""`,
+            `""`,
+            `""`,
+            `""`,
+            `""`,
+            `"${prix}"`,
+            `"${unitePrix}"`,
+            `""`,
+            `""`,
+            `""`,
+            `"1"`,
+            `"1"`,
+            `""`,
+            `""`,
+            `"${uniteGestion}"`,
+            `""`,
+            `""`,
+            `"${quantite}"`,
+            `"0"`,
+            `""`,
+            `"${colisageOutput}"`,
+            `"1"`,
+            `"2"`,
+            `""`,
+            `""`,
+            `"0"`,
+            `""`,
+            `"0"`,
+            `"[EU]"`,
+            `""`,
+            `""`,
+            `"${row["Pays d'origine"]}"`,
+            `""`,
+            `""`,
+            `"${row["Prix unitaire net"]}"`,
+            `"FLG05"`,
+            `""`,
+            `"7070171000"`,
+            `"6070171000"`,
+            `"C001"`,
+            `"1"`,
+            `"0"`,
+            `"0"`,
+            `"0"`,
+            `""`,
+            `""`,
+            `""`,
+            `""`,
+            `""`,
           ];
 
           outputRows.push(outputRow.join(SEPARATOR));
