@@ -892,6 +892,8 @@
           "Tarif fournisseur",
           "Règle tarifaire",
           "Tarif Hub Ethique",
+          "Code catégorie comptable",
+          "Libellé catégorie comptable",
           "Compte de vente",
           "Compte d'achat",
           "Conditionnement pour la livraison",
@@ -934,68 +936,70 @@
           const colisageOutput =
             unitePrix === "U" ? parseInt(row["Colisage"]) : "1";
           const outputRow = [
-            `"*${row["Référence"]}"`,
-            `"NFFU9F44"`,
-            `"BIODIS"`,
-            `""`,
-            `"${typeProduit}"`,
-            `"${libelleTypeProduit}"`,
-            `"S12"`,
-            `"${famille}"`,
-            `""`,
-            `"B"`,
-            `"Biologique"`,
-            `"${forfaitQualite}"`,
-            `"${row["Designation"]}"`,
-            `""`,
-            `""`,
-            `""`,
-            `""`,
-            `""`,
-            `"${prix}"`,
-            `"${unitePrix}"`,
-            `""`,
-            `""`,
-            `""`,
-            `"1"`,
-            `"1"`,
-            `""`,
-            `""`,
-            `"${uniteGestion}"`,
-            `""`,
-            `""`,
-            `"${quantite}"`,
-            `"0"`,
-            `""`,
-            `"${colisageOutput}"`,
-            `"1"`,
-            `"2"`,
-            `""`,
-            `""`,
-            `"0"`,
-            `""`,
-            `"0"`,
-            `"[EU]"`,
-            `""`,
-            `""`,
-            `"${row["Pays d'origine"]}"`,
-            `""`,
-            `""`,
-            `"${row["Prix unitaire net"]}"`,
-            `"FLG05"`,
-            `""`,
-            `"7070171000"`,
-            `"6070171000"`,
-            `"C001"`,
-            `"1"`,
-            `"0"`,
-            `"0"`,
-            `"0"`,
-            `""`,
-            `""`,
-            `""`,
-            `""`,
-            `""`,
+            `"*${row["Référence"]}"`, /* Référence */
+            `"NFFU9F44"`, /* Code Producteur */
+            `"BIODIS"`, /* Libellé Producteur */
+            `""`, /* Autres producteurs */
+            `"${typeProduit}"`, /* Type produit */
+            `"${libelleTypeProduit}"`, /* Libellé type produit */
+            `"S12"`, /* Secteur */
+            `"${famille}"`, /* Famille */
+            `""`, /* Sélection */
+            `"B"`, /* Code Agriculture */
+            `"Biologique"`, /* Libellé Agriculture */
+            `"${forfaitQualite}"`, /* Forfait qualité */
+            `"${row["Designation"]}"`, /* Désignation */
+            `""`, /* Complément */
+            `""`, /* Libellé produit */
+            `""`, /* Ordre */
+            `""`, /* Photo */
+            `""`, /* Fiche technique */
+            `"${prix}"`, /* Prix */
+            `"${unitePrix}"`, /* Unité de prix */
+            `""`, /* Promotion */
+            `""`, /* Début de la promotion */
+            `""`, /* Fin de la promotion */
+            `"1"`, /* TVA */
+            `"1"`, /* Taxe Cotisation interfel */
+            `""`, /* Référence EAN 13 */
+            `""`, /* Référence EAN 14 */
+            `"${uniteGestion}"`, /* Unité de gestion */
+            `""`, /* Conditionnement */
+            `""`, /* Code produit PLU */
+            `"${quantite}"`, /* Quantité */
+            `"0"`, /* Poids Brut */
+            `""`, /* Consigne */
+            `"${colisageOutput}"`, /* Colisage */
+            `"1"`, /* Produit disponible en ligne */
+            `"2"`, /* Délai de commande (jours) */
+            `""`, /* Vérifier date d'approvisionnement */
+            `""`, /* Quantité disponible */
+            `"0"`, /* Controle seuil approvisionnement */
+            `""`, /* Date limite */
+            `"0"`, /* Durée de conservation (jours) */
+            `"[EU]"`, /* Logos */
+            `""`, /* Restriction type inclusion */
+            `""`, /* Restriction type exclusion */
+            `"${row["Pays d'origine"]}"`, /* Origine production */
+            `""`, /* Origine transformation */
+            `""`, /* Note coordinateur */
+            `"${row["Prix unitaire net"]}"`, /* Tarif fournisseur */
+            `"FLG05"`, /* Règle tarifaire */
+            `""`, /* Tarif Hub Ethique */
+            `""`, /* Code catégorie comptable */
+            `""`, /* Libellé catégorie comptable */
+            `"7070171000"`, /* Compte de vente */
+            `"6070171000"`, /* Compte d'achat */
+            `"C001"`, /* Conditionnement pour la livraison */
+            `"1"`, /* Colisage pour la livraison */
+            `"0"`, /* Gestion Stock */
+            `"0"`, /* Colisage pour l'approvisionnement */
+            `"0"`, /* Action en cas de rupture d'approvisionnement */
+            `""`, /* Gamme Bio accessible */
+            `""`, /* Catalogue périphérique */
+            `""`, /* Saisonnalité */
+            `""`, /* Références externes */
+            `""`, /* Zone de stockage */
           ];
 
           outputRows.push(outputRow.join(SEPARATOR));
