@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convertisseur Biodis -> Socléo pour fruits & légumes</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .dropdown-zone {
+        margin-bottom: 20px;
+      }
+      .export-button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .export-button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Convertisseur Biodis -> Socléo pour fruits & légumes</h1>
+    <div class="dropdown-zone">
+      <label for="csvFile">Import CSV File:</label>
+      <input type="file" id="csvFile" accept=".csv" />
+    </div>
+    <button class="export-button" onclick="main()">Export</button>
+
+    <script>
+      const SEPARATOR = ";";
+
+      function capitalize(s) {
+        return s && String(s[0]).toUpperCase() + String(s).slice(1);
+      }
+
+      function main() {
+        const fileInput = document.getElementById("csvFile");
+        const file = fileInput.files[0];
+        if (!file) {
+          alert("Please select a CSV file first.");
+          return;
+        }
+        processCSVFile(file);
+      }
+
+      function processCSVFile(file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const arrayBuffer = event.target.result;
+          const decoder = new TextDecoder("Windows-1252");
+          let csvData = decoder.decode(arrayBuffer);
+          csvData = csvData.replace(/\r/g, "");
+          const processedData = processCSVData(csvData);
+          if (processedData) {
+            downloadCSV(processedData, "import_socleo_biodis.csv");
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      function processCSVData(csvData) {
+        const rows = csvData.split("\n").slice(5); // skip first 5 rows
+        const headers = rows[0].split(SEPARATOR);
+        const requiredColumns = [
+          "Code art",
+          "Famille",
+          "Rayon",
+          "Gamme",
+          "Désignation",
+          "UV",
+          "TVA",
+          "Code barre",
+          "Poids",
+          "Cond",
+          "Origine",
+          // "Prix Net",
+          "Tarif U H.T",
+          "Tarif KG/L",
+        ];
+        const missingColumns = requiredColumns.filter(
+          (col) => !headers.includes(col)
+        );
+
+        if (missingColumns.length > 0) {
+          alert(`Missing columns: ${missingColumns.join(", ")}`);
+          return;
+        }
+
+        const codeArtIndex = headers.indexOf("Code art");
+        const familleIndex = headers.indexOf("Famille");
+        const rayonIndex = headers.indexOf("Rayon");
+        const gammeIndex = headers.indexOf("Gamme");
+        const designationIndex = headers.indexOf("Désignation");
+        const uvIndex = headers.indexOf("UV");
+        const tvaIndex = headers.indexOf("TVA");
+        const codeBarreIndex = headers.indexOf("Code barre");
+        const poidsIndex = headers.indexOf("Poids");
+        const condIndex = headers.indexOf("Cond");
+        const origineIndex = headers.indexOf("Origine");
+        const prixNetIndex = headers.indexOf("Prix Net");
+
+        const parsedRows = parseRows(rows, headers);
+        const outputRows = generateOutputRows(parsedRows);
+        const outputCSV = outputRows.join("\n");
+
+        return outputCSV;
+      }
+
+      function parseRows(rows, headers) {
+        // Parse CSV rows into array of objects, avoid duplicates by "Référence"
+        const parsedRows = [];
+        const seenReferences = new Set();
+        // remove header row
+        rows.slice(1).forEach((row) => {
+          if (row == "") {
+            // remove empty rows
+            return;
+          }
+          const columns = row.split(SEPARATOR);
+          const rowObject = {};
+          headers.forEach((header, index) => {
+            rowObject[header] = columns[index];
+          });
+          const reference = rowObject["Code art"];
+          if (!seenReferences.has(reference)) {
+            seenReferences.add(reference);
+            parsedRows.push(rowObject);
+          }
+        });
+        return parsedRows;
+      }
+
+      function clean_string(str) {
+        return str.replace(/[^a-zA-Z0-9() ]/g, "");
+      }
+
+      function generateOutputRows(rows) {
+        const outputHeaders = [
+          "Référence",
+          "Code Producteur",
+          "Libellé Producteur",
+          "Autres producteurs",
+          "Type produit",
+          "Libellé type produit",
+          "Secteur",
+          "Famille",
+          "Sélection",
+          "Code Agriculture",
+          "Libellé Agriculture",
+          "Forfait qualité",
+          "Désignation",
+          "Complément",
+          "Libellé produit",
+          "Ordre",
+          "Photo",
+          "Fiche technique",
+          "Prix",
+          "Unité de prix",
+          "Promotion",
+          "Début de la promotion",
+          "Fin de la promotion",
+          "TVA",
+          "Taxe Cotisation interfel",
+          "Référence EAN 13",
+          "Référence EAN 14",
+          "Unité de gestion",
+          "Conditionnement",
+          "Code produit PLU",
+          "Quantité",
+          "Poids Brut",
+          "Consigne",
+          "Colisage",
+          "Produit disponible en ligne",
+          "Délai de commande (jours)",
+          "Vérifier date d'approvisionnement",
+          "Quantité disponible",
+          "Controle seuil approvisionnement",
+          "Date limite",
+          "Durée de conservation (jours)",
+          "Logos",
+          "Restriction type inclusion",
+          "Restriction type exclusion",
+          "Origine production",
+          "Origine transformation",
+          "Note coordinateur",
+          "Tarif fournisseur",
+          "Règle tarifaire",
+          "Tarif Hub Ethique",
+          "Code catégorie comptable",
+          "Libellé catégorie comptable",
+          "Compte de vente",
+          "Compte d'achat",
+          "Conditionnement pour la livraison",
+          "Colisage pour la livraison",
+          "Gestion Stock",
+          "Colisage pour l'approvisionnement",
+          "Action en cas de rupture d'approvisionnement",
+          "Gamme Bio accessible",
+          "Catalogue périphérique",
+          "Saisonnalité",
+          "Références externes",
+          "Zone de stockage",
+        ];
+
+        const outputRows = [
+          outputHeaders.map((header) => `"${header}"`).join(SEPARATOR),
+        ];
+
+        rows.forEach((row) => {
+          // compute derived fields
+          const designation = clean_string(row["Désignation"]);
+          const rayon = clean_string(row["Rayon"]);
+          const gamme = clean_string(row["Gamme"]);
+          const uv = row["UV"].replace("KG", "K").toUpperCase();
+          const secteur = row["Famille"] === "FRAIS" ? "BD02" : "BD03";
+          const tva = row["TVA"] === "5,5" ? "1" : "2";
+          const poids = row["Poids"];
+          const quantite = uv === "U" ? "0,0" : poids;
+          const poidsBrut = uv === "U" ? poids : "0,0";
+          const rawPrix = uv === "U" ? row["Tarif U H.T"] : row["Tarif KG/L"];
+          const prix = parseFloat(rawPrix.replace(",", "."))
+            .toFixed(2)
+            .replace(",", "")
+            .replace(".", ",");
+
+          // build output row
+          const outputRow = [
+            // Référence
+            `"*${row["Code art"]}"`,
+            // Code Producteur
+            `"NFFU9F44"`,
+            // Libellé Producteur
+            `"BIODIS"`,
+            // Autres producteurs
+            `""`,
+            // Type produit
+            `"local-grocery-store"`,
+            // Libellé type produit
+            `"Epicerie locale"`,
+            // Secteur
+            `"${secteur}"`,
+            // Famille
+            `"${rayon}"`,
+            // Sélection
+            `"${gamme}"`,
+            // Code Agriculture
+            `"B"`,
+            // Libellé Agriculture
+            `"Biologique"`,
+            // Forfait qualité
+            `""`,
+            // Désignation
+            `"${designation}"`,
+            // Complément
+            `""`,
+            // Libellé produit
+            `""`,
+            // Ordre
+            `""`,
+            // Photo
+            `""`,
+            // Fiche technique
+            `""`,
+            // Prix
+            `"${prix}"`,
+            // Unité de prix
+            `"${row["UV"]}"`,
+            // Promotion
+            `""`,
+            // Début de la promotion
+            `""`,
+            // Fin de la promotion
+            `""`,
+            // TVA
+            `"${tva}"`,
+            // Taxe Cotisation interfel
+            `""`,
+            // Référence EAN 13
+            `""`,
+            // Référence EAN 14
+            `""`,
+            // Unité de gestion
+            `""`,
+            // Conditionnement
+            `"${row["Cond"]}"`,
+            // Code produit PLU
+            `""`,
+            // Quantité
+            `"${quantite}"`,
+            // Poids Brut
+            `"${poidsBrut}"`,
+            // Consigne
+            `""`,
+            // Colisage
+            `""`,
+            // Produit disponible en ligne
+            `""`,
+            // Délai de commande (jours)
+            `"2"`,
+            // Vérifier date d'approvisionnement
+            `""`,
+            // Quantité disponible
+            `""`,
+            // Controle seuil approvisionnement
+            `"0"`,
+            // Date limite
+            `""`,
+            // Durée de conservation (jours)
+            `"0"`,
+            // Logos
+            `"[EU]"`,
+            // Restriction type inclusion
+            `""`,
+            // Restriction type exclusion
+            `""`,
+            // Origine production
+            `""`,
+            // Origine transformation
+            `"${row["Origine"]}"`,
+            // Note coordinateur
+            `""`,
+            // Tarif fournisseur
+            `"${prix}"`,
+            // Règle tarifaire
+            `"FLG05"`,
+            // Tarif Hub Ethique
+            ``,
+            // Code catégorie comptable
+            `"G"`,
+            // Libellé catégorie comptable
+            `"Vente de biens"`,
+            // Compte de vente
+            `"7070171000"`,
+            // Compte d'achat
+            `"6070171000"`,
+            // Conditionnement pour la livraison
+            `""`,
+            // Colisage pour la livraison
+            `"0"`,
+            // Gestion Stock
+            `"0"`,
+            // Colisage pour l'approvisionnement
+            `"0"`,
+            // Action en cas de rupture d'approvisionnement
+            `"0"`,
+            // Gamme Bio accessible
+            `""`,
+            // Catalogue périphérique
+            `""`,
+            // Saisonnalité
+            `""`,
+            // Références externes
+            `""`,
+            // Zone de stockage
+            `""`,
+          ];
+
+          outputRows.push(outputRow.join(SEPARATOR));
+        });
+
+        return outputRows;
+      }
+
+      function downloadCSV(csvData, filename) {
+        const blob = new Blob([csvData], {
+          type: "text/csv",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    </script>
+  </body>
+</html>
