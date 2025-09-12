@@ -917,7 +917,7 @@
         ];
 
         rows.forEach((row) => {
-          const designation = clean_string(["Designation"].toLowerCase());
+          const designation = clean_string(row["Designation"].toLowerCase());
           const typeProduit = getProductFamily(designation);
           const famille = getFamily(designation);
           const libelleTypeProduit =
