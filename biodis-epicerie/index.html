@@ -65,7 +65,8 @@
       }
 
       function processCSVData(csvData) {
-        const rows = csvData.split("\n").slice(5); // skip first 5 rows
+        const allRows = csvData.split("\n");
+        const rows = allRows.filter((row) => !row.startsWith(";"));
         const headers = rows[0].split(SEPARATOR);
         const requiredColumns = [
           "Code art",
