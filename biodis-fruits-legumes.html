@@ -32,6 +32,8 @@
     </div>
     <button class="export-button" onclick="main()">Export</button>
 
+    <script src="utils.js"></script>
+
     <script>
       const SEPARATOR = ";";
       const FOOD_DATA = {
@@ -664,11 +666,8 @@
         prune: { famille: "fruits", sous_famille: "prune", hiver: "oui" },
       };
 
-      function capitalize(s) {
-        return s && String(s[0]).toUpperCase() + String(s).slice(1);
-      }
-
       function containsWinterProduce(name) {
+        // related to FOOD_DATA
         for (const product_name in FOOD_DATA) {
           const product = FOOD_DATA[product_name];
           if (product["hiver"] === "non") {
@@ -681,6 +680,7 @@
       }
 
       function getProductFamily(name) {
+        // related to FOOD_DATA
         for (const product_name in FOOD_DATA) {
           const product = FOOD_DATA[product_name];
           if (name.includes(product_name)) {
@@ -693,7 +693,6 @@
       }
 
       function getFamily(name) {
-        let i = 0;
         for (const product_name in FOOD_DATA) {
           const product = FOOD_DATA[product_name];
           if (name.includes(product_name)) {
@@ -731,20 +730,33 @@
         const reader = new FileReader();
         reader.onload = function (event) {
           const arrayBuffer = event.target.result;
-          const decoder = new TextDecoder("Windows-1252");
-          let csvData = decoder.decode(arrayBuffer);
-          csvData = csvData.replace(/\r/g, "");
-          const processedData = processCSVData(csvData);
-          if (processedData) {
-            downloadCSV(processedData, "import_socleo_biodis.csv");
-          }
+          const data = decode_csv(arrayBuffer);
+          const lines = clean_check_data(data);
+          const output_data = process_lines(lines);
+          download_csv(output_data, "biodis_mercuriale_converted.csv");
         };
         reader.readAsArrayBuffer(file);
       }
 
-      function processCSVData(csvData) {
-        const rows = csvData.split("\n");
+      function clean_check_data(csvData) {
+        /*
+          Returns an array of rows (strings) from the CSV data
+          Remove useless leading rows and check required headers
+        */
+        const allRows = csvData.split("\n");
+        const startIndex = allRows.findIndex((row) =>
+          row.startsWith("Date Mercuriale")
+        );
+        const rows = allRows.slice(startIndex);
         const headers = rows[0].split(SEPARATOR);
+        checkRequiredHeaders(headers);
+        return rows;
+      }
+
+      function checkRequiredHeaders(headers) {
+        /*
+          Check if all required headers (columns names) are present
+        */
         const requiredColumns = [
           "Designation",
           "Région",
@@ -758,22 +770,28 @@
         const missingColumns = requiredColumns.filter(
           (col) => !headers.includes(col)
         );
-
         if (missingColumns.length > 0) {
           alert(`Missing columns: ${missingColumns.join(", ")}`);
-          return;
+          throw new Error("Missing required columns");
         }
+      }
 
+      function process_lines(lines) {
+        const headers = lines[0].split(SEPARATOR);
+        console.log(headers);
+        // remove headers (first row)
+        const rows = lines.slice(1);
+        const parsedRows = parseRows(
+          rows,
+          headers,
+          (key = "Référence"),
+          (separator = SEPARATOR)
+        );
+        console.log("12");
         const designationIndex = headers.indexOf("Designation");
         const regionIndex = headers.indexOf("Région");
         const referenceIndex = headers.indexOf("Référence");
         const codeBioIndex = headers.indexOf("Code BIO");
-        const prixUnitaireNetIndex = headers.indexOf("Prix unitaire net");
-        const uniteVenteIndex = headers.indexOf("Unité de vente");
-        const colisageIndex = headers.indexOf("Colisage");
-        const paysOrigineIndex = headers.indexOf("Pays d'origine");
-
-        const parsedRows = parseRows(rows, headers);
         const filteredRows = filterRows(
           parsedRows,
           designationIndex,
@@ -782,25 +800,7 @@
           codeBioIndex
         );
         const outputRows = generateOutputRows(filteredRows);
-        const outputCSV = outputRows.join("\n");
-
-        return outputCSV;
-      }
-
-      function parseRows(rows, headers) {
-        const parsedRows = [];
-        rows.slice(1).forEach((row) => {
-          if (row == "") {
-            return;
-          }
-          const columns = row.split(SEPARATOR);
-          const rowObject = {};
-          headers.forEach((header, index) => {
-            rowObject[header] = columns[index];
-          });
-          parsedRows.push(rowObject);
-        });
-        return parsedRows;
+        return generate_csv(outputRows);
       }
 
       function filterRows(
@@ -810,6 +810,7 @@
         referenceIndex,
         codeBioIndex
       ) {
+        // Remove rows based on criteria
         const filteredRows = [];
         const uniqueReferences = new Set();
         const currentDate = new Date();
@@ -840,82 +841,8 @@
         return filteredRows;
       }
 
-      function clean_string(str) {
-        return str.replace(/[^a-zA-Z0-9() ]/g, "");
-      }
-
       function generateOutputRows(rows) {
-        const outputHeaders = [
-          "Référence",
-          "Code Producteur",
-          "Libellé Producteur",
-          "Autres producteurs",
-          "Type produit",
-          "Libellé type produit",
-          "Secteur",
-          "Famille",
-          "Sélection",
-          "Code Agriculture",
-          "Libellé Agriculture",
-          "Forfait qualité",
-          "Désignation",
-          "Complément",
-          "Libellé produit",
-          "Ordre",
-          "Photo",
-          "Fiche technique",
-          "Prix",
-          "Unité de prix",
-          "Promotion",
-          "Début de la promotion",
-          "Fin de la promotion",
-          "TVA",
-          "Taxe Cotisation interfel",
-          "Référence EAN 13",
-          "Référence EAN 14",
-          "Unité de gestion",
-          "Conditionnement",
-          "Code produit PLU",
-          "Quantité",
-          "Poids Brut",
-          "Consigne",
-          "Colisage",
-          "Produit disponible en ligne",
-          "Délai de commande (jours)",
-          "Vérifier date d'approvisionnement",
-          "Quantité disponible",
-          "Controle seuil approvisionnement",
-          "Date limite",
-          "Durée de conservation (jours)",
-          "Logos",
-          "Restriction type inclusion",
-          "Restriction type exclusion",
-          "Origine production",
-          "Origine transformation",
-          "Note coordinateur",
-          "Tarif fournisseur",
-          "Règle tarifaire",
-          "Tarif Hub Ethique",
-          "Code catégorie comptable",
-          "Libellé catégorie comptable",
-          "Compte de vente",
-          "Compte d'achat",
-          "Conditionnement pour la livraison",
-          "Colisage pour la livraison",
-          "Gestion Stock",
-          "Colisage pour l'approvisionnement",
-          "Action en cas de rupture d'approvisionnement",
-          "Gamme Bio accessible",
-          "Catalogue périphérique",
-          "Saisonnalité",
-          "Références externes",
-          "Zone de stockage",
-        ];
-
-        const outputRows = [
-          outputHeaders.map((header) => `"${header}"`).join(SEPARATOR),
-        ];
-
+        let outputRows = [];
         rows.forEach((row) => {
           const designation = clean_string(row["Designation"].toLowerCase());
           const typeProduit = getProductFamily(designation);
@@ -939,7 +866,7 @@
           const quantite = unitePrix === "U" ? "0" : parseInt(row["Colisage"]);
           const colisageOutput =
             unitePrix === "U" ? parseInt(row["Colisage"]) : "1";
-          const outputRow = [
+          const outputRow = build_output_row(
             // Référence
             `"*${row["Référence"]}"`,
             // Code Producteur
@@ -965,7 +892,7 @@
             // Forfait qualité
             `"${forfaitQualite}"`,
             // Désignation
-            `"${row["Designation"]}"`,
+            `"${designation}"`,
             // Complément
             `""`,
             // Libellé produit
@@ -1039,7 +966,7 @@
             // Règle tarifaire
             `"FLG05"`,
             // Tarif Hub Ethique
-            `""`,
+            ``,
             // Code catégorie comptable
             `"G"`,
             // Libellé catégorie comptable
@@ -1067,26 +994,12 @@
             // Références externes
             `""`,
             // Zone de stockage
-            `""`,
-          ];
+            `""`
+          );
 
           outputRows.push(outputRow.join(SEPARATOR));
         });
-
         return outputRows;
-      }
-
-      function downloadCSV(csvData, filename) {
-        const blob = new Blob([csvData], {
-          type: "text/csv",
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
       }
     </script>
   </body>
