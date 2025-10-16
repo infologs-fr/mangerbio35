@@ -3,7 +3,7 @@ function capitalize(s) {
 }
 
 function clean_string(str) {
-  return str.replace(/[^a-zA-Z0-9() ]/g, "");
+  return str.replace(/[^a-zA-Z0-9()., ]/g, "");
 }
 
 function decode_csv(arrayBuffer) {
