@@ -121,7 +121,9 @@
           const secteur = row["Famille"] === "FRAIS" ? "BD02" : "BD03";
           const tva = row["TVA"] === "5,5" ? "1" : "2";
           const poids = row["Poids"];
-          const quantite = uv === "U" ? "0,0" : poids;
+          const conditionnement = row["Cond"];
+          const quantite = uv === "U" ? "0,0" : conditionnement;
+          const colisage = uv === "U" ? "1" : "0";
           const poidsBrut = uv === "U" ? poids : "0,0";
           const prix = parseFloat(row["Prix Net"].replace(",", "."))
             .toFixed(2)
