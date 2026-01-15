@@ -36,10 +36,21 @@
 
     <script>
       const SEPARATOR = ";";
+      // FOOD_DATA is a dict, if the key is found in the product name/designation,
       const FOOD_DATA = {
         plants: { ignore: true },
         ail: { famille: "legumes", sous_famille: "ail", hiver: "oui" },
         artichaut: {
+          famille: "legumes",
+          sous_famille: "autres légumes",
+          hiver: "oui",
+        },
+        fenouil: {
+          famille: "legumes",
+          sous_famille: "autres légumes",
+          hiver: "oui",
+        },
+        panais: {
           famille: "legumes",
           sous_famille: "autres légumes",
           hiver: "oui",
@@ -92,6 +103,16 @@
           sous_famille: "autres légumes",
           hiver: "oui",
         },
+        celeri: {
+          famille: "legumes",
+          sous_famille: "autres légumes",
+          hiver: "oui",
+        },
+        cebette: {
+          famille: "legumes",
+          sous_famille: "autres légumes",
+          hiver: "oui",
+        },
         "céleri-rave": {
           famille: "legumes",
           sous_famille: "autres légumes",
@@ -102,15 +123,11 @@
           sous_famille: "autres légumes",
           hiver: "oui",
         },
-        "champignon de paris": {
+        champignon: {
           famille: "legumes",
           sous_famille: "champignons",
           hiver: "oui",
-        },
-        champignons: {
-          famille: "legumes",
-          sous_famille: "champignons",
-          hiver: "oui",
+          substrings: ["de paris", "brun", "shitake"],
         },
         chanterelles: {
           famille: "legumes",
@@ -127,63 +144,26 @@
           sous_famille: "autres légumes",
           hiver: "oui",
         },
-        chou: { famille: "legumes", sous_famille: "chou", hiver: "oui" },
-        "chou blanc": {
+        chou: {
           famille: "legumes",
           sous_famille: "chou",
           hiver: "oui",
-        },
-        "chou de bruxelles": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou cabus": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou chinois": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou-fleur": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou frisé": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou kale": { famille: "legumes", sous_famille: "chou", hiver: "oui" },
-        "chou navet": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou palmier": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou palmiste": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou rave": { famille: "legumes", sous_famille: "chou", hiver: "oui" },
-        "chou romanesco": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
-        },
-        "chou rouge": {
-          famille: "legumes",
-          sous_famille: "chou",
-          hiver: "oui",
+          substrings: [
+            "",
+            "blanc",
+            "de bruxelles",
+            "cabus",
+            "chinois",
+            "fleur",
+            "frisé",
+            "kale",
+            "navet",
+            "palmier",
+            "palmiste",
+            "rave",
+            "romanesco",
+            "rouge",
+          ],
         },
         citrouille: {
           famille: "legumes",
@@ -215,6 +195,7 @@
           famille: "legumes",
           sous_famille: "echalote",
           hiver: "oui",
+          substrings: ["", "echalotte"],
         },
         edamame: {
           famille: "legumes",
@@ -411,35 +392,36 @@
           sous_famille: "agrume",
           hiver: "oui",
         },
+        datte: {
+          famille: "fruits",
+          sous_famille: "autres fruits",
+          hiver: "oui",
+        },
         "mandarine ": {
           famille: "fruits",
           sous_famille: "agrume",
           hiver: "oui",
         },
-        "orange a jus": {
+        orange: {
           famille: "fruits",
           sous_famille: "agrume",
           hiver: "oui",
-        },
-        "orange washington navel": {
-          famille: "fruits",
-          sous_famille: "agrume",
-          hiver: "oui",
-        },
-        "orange lanelate ": {
-          famille: "fruits",
-          sous_famille: "agrume",
-          hiver: "oui",
-        },
-        "orange salustiana ": {
-          famille: "fruits",
-          sous_famille: "agrume",
-          hiver: "oui",
-        },
-        "orange sanguine ": {
-          famille: "fruits",
-          sous_famille: "agrume",
-          hiver: "oui",
+          substrings: [
+            "amere",
+            "valencia",
+            "a jus",
+            "washington navel",
+            "lanelate",
+            "salustiana",
+            "sanguine",
+            "naveline",
+            "feuille saint nicola",
+            "azahar",
+            "naveline",
+            "tarocco rosso",
+            "navel",
+            "douce vanille",
+          ],
         },
         pomelo: { famille: "fruits", sous_famille: "agrume", hiver: "oui" },
         kumquat: {
@@ -467,21 +449,17 @@
           sous_famille: "autres fruits",
           hiver: "oui",
         },
-        "kiwi hayward ": {
+        kiwi: {
           famille: "fruits",
           sous_famille: "kiwi",
           hiver: "oui",
+          substrings: ["hayward", "jaune"],
         },
-        "kiwi jaune ": {
-          famille: "fruits",
-          sous_famille: "kiwi",
-          hiver: "oui",
-        },
-        "banane ": { famille: "fruits", sous_famille: "banane", hiver: "oui" },
-        "banane cavendish ": {
+        banane: {
           famille: "fruits",
           sous_famille: "banane",
           hiver: "oui",
+          substrings: ["", "cavendish"],
         },
         curcuma: {
           famille: "fruits",
@@ -534,116 +512,44 @@
           sous_famille: "autres fruits",
           hiver: "oui",
         },
-        poire: { famille: "fruits", sous_famille: "poire", hiver: "oui" },
-        "poire comice ": {
+        poire: {
           famille: "fruits",
           sous_famille: "poire",
           hiver: "oui",
+          substrings: ["", "comice", "xenia", "conference", "selena"],
         },
-        "poire xenia": {
-          famille: "fruits",
-          sous_famille: "poire",
-          hiver: "oui",
-        },
-        "poire conference ": {
-          famille: "fruits",
-          sous_famille: "poire",
-          hiver: "oui",
-        },
-        "poire selena": {
-          famille: "fruits",
-          sous_famille: "poire",
-          hiver: "oui",
-        },
-        "pomme cripps pink": {
+        pomme: {
           famille: "fruits",
           sous_famille: "pomme",
           hiver: "oui",
-        },
-        "pomme belchard": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme story": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme goldrush": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme story": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme swing": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme belchard": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme a cuisiner": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme julie": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme dalinette ": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme ariane": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme dalinette  ": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme crimson crisp": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme swing": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme pink lady": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme golden delicious ": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme granny smith": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
-        },
-        "pomme natyra": {
-          famille: "fruits",
-          sous_famille: "pomme",
-          hiver: "oui",
+          substrings: [
+            "a cuisiner",
+            "ariane",
+            "belchard",
+            "chantecler",
+            "crimson crisp",
+            "cripps pink",
+            "crispp pink",
+            "dalinette",
+            "gala",
+            "golden delicious",
+            "goldrush",
+            "granny smith",
+            "inored",
+            "julie",
+            "juliet",
+            "natyra",
+            "patte de loup",
+            "pilot",
+            "pink lady",
+            "pinova",
+            "pixie",
+            "reinette",
+            "story",
+            "swing",
+            "topaz",
+            "xeleven",
+          ],
         },
         abricot: { famille: "fruits", sous_famille: "abricot", hiver: "oui" },
         pêche: {
@@ -694,10 +600,17 @@
 
       function getFamily(name) {
         for (const product_name in FOOD_DATA) {
-          const product = FOOD_DATA[product_name];
+          const product_data = FOOD_DATA[product_name];
           if (name.includes(product_name)) {
-            return `${capitalize(product["famille"])}-${capitalize(
-              product["sous_famille"]
+            // If substrings field exists, check that at least one is in the name
+            if (product_data.substrings) {
+              const hasMatch = product_data.substrings.some((substr) =>
+                name.includes(substr)
+              );
+              if (!hasMatch) continue;
+            }
+            return `${capitalize(product_data["famille"])}-${capitalize(
+              product_data["sous_famille"]
             )}`;
           }
         }
@@ -861,7 +774,7 @@
             .toFixed(2)
             .replace(",", "")
             .replace(".", ",");
-          const forfaitQualite = typeProduit === "fruit" ? "1S" : "2S";
+          const forfaitQualite = typeProduit === "fruit" ? "1" : "2";
           const uniteGestion = unitePrix === "U" ? "U" : "COLIS";
           const quantite = unitePrix === "U" ? "0" : parseInt(row["Colisage"]);
           const colisageOutput =
@@ -916,6 +829,8 @@
             // TVA
             `"1"`,
             // Taxe Cotisation interfel
+            `"1"`,
+            // Motif exemption TVA
             `"1"`,
             // Référence EAN 13
             `""`,

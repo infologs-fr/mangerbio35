@@ -3,7 +3,10 @@ function capitalize(s) {
 }
 
 function clean_string(str) {
-  return str.replace(/[^a-zA-ZÀ-ÿ0-9()., ]/g, "");
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9().,/ ]/g, "");
 }
 
 function decode_csv(arrayBuffer) {
@@ -62,6 +65,7 @@ function build_output_row(
   fin_de_la_promotion = "",
   tva,
   taxe_cotisation_interfel = "",
+  motif_exemption_tva = "1",
   reference_ean_13 = "",
   reference_ean_14 = "",
   unite_de_gestion = "",
@@ -128,6 +132,7 @@ function build_output_row(
     `${fin_de_la_promotion}`,
     `${tva}`,
     `${taxe_cotisation_interfel}`,
+    `${motif_exemption_tva}`,
     `${reference_ean_13}`,
     `${reference_ean_14}`,
     `${unite_de_gestion}`,
