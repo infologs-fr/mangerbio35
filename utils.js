@@ -1,3 +1,5 @@
+const VERSION = "2026-01-16";
+
 function capitalize(s) {
   return s && String(s[0]).toUpperCase() + String(s).slice(1);
 }
@@ -272,5 +274,3 @@ function generate_csv(rows) {
   const outputCSV = outputRows.join("\n");
   return outputCSV;
 }
-
-const VERSION = "2026-01-15";
