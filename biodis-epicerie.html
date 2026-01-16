@@ -26,6 +26,7 @@
   </head>
   <body>
     <h1>Convertisseur Biodis -> Socléo pour l'épicerie</h1>
+    <p>Version: <span id="version"></span></p>
     <div class="dropdown-zone">
       <label for="csvFile">Import CSV File:</label>
       <input type="file" id="csvFile" accept=".csv" />
@@ -33,6 +34,10 @@
     <button class="export-button" onclick="main()">Export</button>
 
     <script src="utils.js"></script>
+
+    <script>
+      document.getElementById("version").textContent = VERSION;
+    </script>
 
     <script>
       const SEPARATOR = ";";

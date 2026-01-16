@@ -26,6 +26,7 @@
   </head>
   <body>
     <h1>Convertisseur Biodis -> Socléo pour fruits & légumes</h1>
+    <p>Version: <span id="version"></span></p>
     <div class="dropdown-zone">
       <label for="csvFile">Import CSV File:</label>
       <input type="file" id="csvFile" accept=".csv" />
@@ -33,6 +34,10 @@
     <button class="export-button" onclick="main()">Export</button>
 
     <script src="utils.js"></script>
+
+    <script>
+      document.getElementById("version").textContent = VERSION;
+    </script>
 
     <script>
       const SEPARATOR = ";";
@@ -383,15 +388,11 @@
         },
         salade: { famille: "legumes", sous_famille: "salade", hiver: "oui" },
         ananas: { famille: "fruits", sous_famille: "ananas", hiver: "oui" },
-        "citron jaune ": {
+        citron: {
           famille: "fruits",
           sous_famille: "agrume",
           hiver: "oui",
-        },
-        "citron vert ": {
-          famille: "fruits",
-          sous_famille: "agrume",
-          hiver: "oui",
+          substrings: ["jaune", "vert", "bergamote"],
         },
         datte: {
           famille: "fruits",

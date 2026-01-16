@@ -271,3 +271,5 @@ function generate_csv(rows) {
   const outputCSV = outputRows.join("\n");
   return outputCSV;
 }
+
+const VERSION = "2026-01-15";
