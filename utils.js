@@ -1,4 +1,4 @@
-const VERSION = "2026-01-16";
+const VERSION = "2026-01-16T09-40-00";
 
 function capitalize(s) {
   return s && String(s[0]).toUpperCase() + String(s).slice(1);

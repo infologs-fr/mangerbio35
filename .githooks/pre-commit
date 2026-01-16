@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Print current date in YYYY-MM-DDTHH-MM-SS format
+echo "Commit date: $(date '+%Y-%m-%dT%H-%M-%S')"
+
+# Ask user if they updated the VERSION variable
+echo
+read -r -n1 -p "Did you update the VERSION variable in utils.js? (y/n): " answer < /dev/tty
+
+if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
+    echo
+    echo "Please update the VERSION variable before committing."
+    exit 1
+fi
+
+exit 0
