@@ -224,6 +224,7 @@ function generate_csv(rows) {
     "Fin de la promotion",
     "TVA",
     "Taxe Cotisation interfel",
+    "Motif exemption TVA",
     "Référence EAN 13",
     "Référence EAN 14",
     "Unité de gestion",
