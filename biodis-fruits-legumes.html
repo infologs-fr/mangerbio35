@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -613,12 +613,12 @@
             // If substrings field exists, check that at least one is in the name
             if (product_data.substrings) {
               const hasMatch = product_data.substrings.some((substr) =>
-                name.includes(substr)
+                name.includes(substr),
               );
               if (!hasMatch) continue;
             }
             return `${capitalize(product_data["famille"])}-${capitalize(
-              product_data["sous_famille"]
+              product_data["sous_famille"],
             )}`;
           }
         }
@@ -666,7 +666,7 @@
         */
         const allRows = csvData.split("\n");
         const startIndex = allRows.findIndex((row) =>
-          row.startsWith("Date Mercuriale")
+          row.startsWith("Date Mercuriale"),
         );
         const rows = allRows.slice(startIndex);
         const headers = rows[0].split(SEPARATOR);
@@ -689,7 +689,7 @@
           "Pays d'origine",
         ];
         const missingColumns = requiredColumns.filter(
-          (col) => !headers.includes(col)
+          (col) => !headers.includes(col),
         );
         if (missingColumns.length > 0) {
           alert(`Missing columns: ${missingColumns.join(", ")}`);
@@ -706,7 +706,7 @@
           rows,
           headers,
           (key = "Référence"),
-          (separator = SEPARATOR)
+          (separator = SEPARATOR),
         );
         console.log("12");
         const designationIndex = headers.indexOf("Designation");
@@ -718,7 +718,7 @@
           designationIndex,
           regionIndex,
           referenceIndex,
-          codeBioIndex
+          codeBioIndex,
         );
         const outputRows = generateOutputRows(filteredRows);
         return generate_csv(outputRows);
@@ -729,7 +729,7 @@
         designationIndex,
         regionIndex,
         referenceIndex,
-        codeBioIndex
+        codeBioIndex,
       ) {
         // Remove rows based on criteria
         const filteredRows = [];
@@ -774,15 +774,15 @@
             row["Unité de vente"] === "U"
               ? "U"
               : row["Unité de vente"] === "KG"
-              ? "K"
-              : "U";
+                ? "K"
+                : "U";
           const prix = (
             parseFloat(row["Prix unitaire net"].replace(",", ".")) * 1.3
           )
             .toFixed(2)
             .replace(",", "")
             .replace(".", ",");
-          const forfaitQualite = typeProduit === "fruit" ? "1" : "2";
+          const forfaitQualite = typeProduit === "fruit" ? "2" : "1";
           const uniteGestion = unitePrix === "U" ? "U" : "COLIS";
           const quantite = unitePrix === "U" ? "0" : parseInt(row["Colisage"]);
           const colisageOutput =
@@ -917,7 +917,7 @@
             // Références externes
             `""`,
             // Zone de stockage
-            `""`
+            `""`,
           );
 
           outputRows.push(outputRow.join(SEPARATOR));

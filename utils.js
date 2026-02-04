@@ -1,4 +1,4 @@
-const VERSION = "2026-01-16T09-40-00";
+const VERSION = "2026-02-04T12-51-00";
 
 function capitalize(s) {
   return s && String(s[0]).toUpperCase() + String(s).slice(1);
@@ -106,7 +106,7 @@ function build_output_row(
   catalogue_peripherique = "",
   saisonnalite = "",
   references_externes = "",
-  zone_de_stockage = ""
+  zone_de_stockage = "",
 ) {
   return [
     `${reference}`,
